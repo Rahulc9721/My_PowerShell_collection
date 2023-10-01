@@ -1,0 +1,167 @@
+get-adcomputer -filter * -properties * | ft name,operatingsystem,operatingsystemversion | out-file -filepath c:\computer.txt
+
+get-adcomputer -filter * -properties * |ft name,operatingsystem,operatingsystemversion
+
+
+ get-adcomputer -filter * -properties * | Select-Object name,operatingsystem,operatingsystemversion,DistinguishedName | Export-Csv C:\temp\test.csv -NoTypeInformation
+
+
+
+Q= AD User list
+
+2. Get-ADUser | Export-csv D:\Test\AllUswers.csv -NoTypeInformation
+
+3. Get-ADComputer -Filter * -Properties * | Export-csv D:\AllCOmputer.csv -NoTypeInformation
+
+Q= AD User password never pxpire
+
+get-aduser -filter * -properties Name, PasswordNeverExpires -server ram | where {$_.passwordNeverExpires -eq "true" } |  Select-Object DistinguishedName,Name,Enabled | where {$_.Enabled -eq "True"} | export-csv -path d:\export.csv
+
+Q = how to get all information of specfic user
+
+Answer = Get-ADUser -Identity username -Properties * | export-csv -path d:\export.csv
+
+Q = how to get AD user password never expaire reports
+
+Answer = Get-ADUser -Filter * -Properties mail | Where { $_.Enabled -eq $TRUE} | export-csv -path d:\ram.csv
+
+Q = how to get AD user password never expaire  opation uncheck reports
+
+Answer = Get-ADUser -Filter * -Properties mail | Where { $_.Enabled -eq $FALSE} | export-csv -path d:\ram.csv
+
+
+
+1. how to get serialnumber
+
+Answer = wmic bios get serialnumber
+
+2. how to get AD Account SID
+
+Answer = wmic useraccount get sid or name
+
+3. how to get more information of system.
+Answer systeminfo
+
+4. how to check VSS
+Answer. VSSADMIN /?
+
+5. how to check ADDS health 
+
+Answer.DCdiag
+
+6. how to get Auditpol GPO and other information
+
+Answer.( i) auditpol /get /category:*
+
+         (ii) gpupdate /r
+
+        (iii) gpupdate /?
+
+7. how to get user creation date and last login , whenchange
+
+Answer= get-aduser -filter * -properties * | select Name,whencreated,whenChanged,lastlogonDate | ft -autosize >>c:\users.txt
+
+Answer = get-aduser -filter * -properties * | select Name,whencreated,whenChanged,lastlogonDate | export-csv -path d:\export.csv
+
+8. how to check the date of user change password.
+
+Answer. net user /do username
+
+
+
+8. How to Disable the Internet Explorer in win dows server.
+
+Answer = Disable-WindowsOptionalFeature -online -FeatureName internet-explorer-optional-amd64
+
+
+9. how to get ADUser Disable list
+
+Answer = Import-Module ActiveDirectory
+
+Get-ADUser -Filter { Enabled -eq $false } -Properties * |
+Select-Object Name, UserPrincipalName, Enabled | Sort-Object Name |
+
+Export-Csv "d:\DisabledUsers.csv" -Encoding UTF8 -NoTypeInformation
+
+
+10. how to get ADuser last login reports.
+
+Answer = Get-ADUser -Filter * -Properties lastLogon | Select samaccountname, @{Name="lastLogon";Expression={[datetime]::FromFileTime($_.'lastLogon')}} | Export-Csv C:\test.csv
+
+
+11. how to get Ad user password Expire date and ( password never expire enable or disable both
+
+Answer : get-aduser -filter * -properties passwordlastset, passwordneverexpires |ft Name, passwordlastset, Passwordneverexpires
+
+12. CMD command AD user change  Password date time
+
+Answer = Net user USERNAME /domain
+
+13. how to get AD User details 
+
+Answer = get-aduser -filter * -Properties * | select displayname, city, company, department, EmailAddress, telephonenumber | export-csv -path c:\export-all.csv
+
+
+14. how to get ADuser ALL details.
+
+Answer = Get-ADUser -filter * | Export-CSV c:\users.csv -NoTypeInformation
+
+Q = how to get AD group member 
+
+Answer = Get-ADGroupMember -Identity "Administrators" | export-csv -path d:\ram.csv
+
+
+
+
+
+
+  Q = How to troubleshoot errors that occur when you join Windows-based computers to a domain
+
+
+
+answer =     nltest /dsgetdc:<netbios domain name> /force
+               nltest /dsgetdc:<DNS domain name> /force
+
+
+
+
+
+Q=Verify that Active Directory is replicating between all DCs. You can use the following command to detect any errors:
+
+
+ answer = repadmin /replsummary /bysrc /bydest /sort:delta
+
+
+
+Q        =      how to get windows  domain logs path
+ Answer  =  C:\Windows\Debug\netsetup.log 
+           C:\Windows\debug
+
+
+Q = when going to joine domain server  powershall
+
+Answer = Test-NetConnection <IP_address_of_the_DC> -Port 389
+
+        The GPO setting is located at Computer Configuration > Policies > Windows Settings > Security Settings > Local Policies User Rights Assignment > Add                  workstations to domain.
+
+user shuld member of this GPO setting ok
+
+
+
+repadmin /syncall /adep 
+repadmin /syncall /ape
+
+
+
+Q = If other devices on your network are experiencing connection issues
+
+Type netsh winsock reset and select Enter.
+
+Q= You can try to reset TCP/IP if you have Internet connection issues.
+Type netsh int ip reset and select Enter.
+
+ Answer =  immedetly restart the systemshutdown /r /t 0
+
+
+
+net user suman *
